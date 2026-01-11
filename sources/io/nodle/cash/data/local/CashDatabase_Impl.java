@@ -20,10 +20,10 @@ import ra.d;
 
 public final class CashDatabase_Impl extends CashDatabase {
 
-    /* renamed from: p  reason: collision with root package name */
+    
     public volatile b f6684p;
 
-    /* renamed from: q  reason: collision with root package name */
+    
     public volatile d f6685q;
 
     public class a extends f0.a {
