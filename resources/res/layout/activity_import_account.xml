@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android" xmlns:app="http://schemas.android.com/apk/res-auto" xmlns:aapt="http://schemas.android.com/aapt" android:layout_width="match_parent" android:layout_height="match_parent" android:layout_marginBottom="24dp" android:layout_marginStart="@dimen/screen_margin_horizontal" android:layout_marginEnd="@dimen/screen_margin_horizontal">
+    <include android:id="@+id/toolbar" layout="@layout/toolbar_default"/>
+    <TextView android:id="@+id/titleTextView" android:layout_width="match_parent" android:layout_height="wrap_content" android:text="@string/titleImport" android:layout_below="@+id/toolbar" style="@style/HeaderTextAppearance"/>
+    <ScrollView android:id="@+id/contentLayout" android:scrollbars="none" android:layout_width="match_parent" android:layout_height="wrap_content" android:layout_below="@+id/titleTextView">
+        <LinearLayout android:orientation="vertical" android:layout_width="match_parent" android:layout_height="wrap_content">
+            <TextView android:id="@+id/importMessageTextView" android:layout_width="match_parent" android:layout_height="wrap_content" android:text="@string/importPhrase" style="@style/SecondaryTextAppearance"/>
+            <EditText android:id="@+id/wordEditText" android:padding="10dp" android:layout_width="match_parent" android:layout_height="wrap_content" android:layout_marginTop="24dp" android:lines="1" android:inputType="text"/>
+            <androidx.recyclerview.widget.RecyclerView android:id="@+id/mnemonicsGridView" android:visibility="gone" android:layout_width="match_parent" android:layout_height="wrap_content" android:layout_marginTop="60dp" android:layout_marginStart="24dp" android:layout_marginEnd="24dp"/>
+            <TextView android:textColor="@color/colorErrorText" android:id="@+id/failTextView" android:visibility="gone" android:layout_width="match_parent" android:layout_height="wrap_content" android:layout_marginTop="8dp" android:layout_marginBottom="8dp" android:text="@string/importFail"/>
+        </LinearLayout>
+    </ScrollView>
+    <LinearLayout android:gravity="bottom" android:id="@+id/bottomLayout" android:layout_width="match_parent" android:layout_height="wrap_content" android:layout_marginTop="8dp" android:weightSum="2" android:layout_below="@+id/contentLayout" android:layout_alignParentBottom="true">
+        <Button android:id="@+id/previousButton" android:layout_width="0dp" android:layout_height="wrap_content" android:text="@string/previous" android:layout_weight="1" android:onClick="onClickPrevious" android:layout_marginEnd="4dp" style="@style/SecondaryButtonAppearance"/>
+        <Button android:id="@+id/nextButton" android:layout_width="0dp" android:layout_height="wrap_content" android:text="@string/next" android:layout_weight="1" android:onClick="onClickNext" android:layout_marginStart="4dp"/>
+    </LinearLayout>
+</RelativeLayout>

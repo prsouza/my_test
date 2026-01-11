@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android" xmlns:app="http://schemas.android.com/apk/res-auto" xmlns:aapt="http://schemas.android.com/aapt" android:tag="layout/fragment_map_0" android:background="@color/backgroundV2" android:layout_width="match_parent" android:layout_height="match_parent" android:layout_marginBottom="110dp">
+    <com.google.android.gms.maps.MapView android:id="@+id/mapView" android:layout_width="match_parent" android:layout_height="match_parent"/>
+    <ImageView android:id="@+id/curtainView" android:background="@color/appBackground" android:layout_width="match_parent" android:layout_height="match_parent" android:src="@drawable/img_map_grid" android:scaleType="centerCrop"/>
+    <io.nodle.map_marker.MarkerView android:id="@+id/markerView" android:layout_width="match_parent" android:layout_height="match_parent"/>
+</RelativeLayout>

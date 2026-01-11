@@ -1,0 +1,30 @@
+syntax = "proto3";
+
+package io.nodle.sdk.common;
+option go_package = ".;data";
+
+import "common.proto";
+import "cellScanReport.proto";
+
+message ScanItem {
+  uint64 timestampMsec = 1;
+  LocationItem location = 2;
+  string device = 3;
+  int32 rssi = 4;
+  bytes payload = 5;
+}
+
+message ScanResult {
+  repeated ScanItem records = 1;
+}
+
+message NodleReport {
+  string devKey = 1;
+  string signedBy = 2;
+  string tags = 3;
+  string sdkVersion = 4;
+  oneof data {
+    ScanResult bleScans = 5;
+    CellScanResult cellScans = 6;
+  }
+}

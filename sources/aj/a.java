@@ -1,0 +1,19 @@
+package aj;
+
+import java.util.List;
+
+public interface a {
+    List<String> a();
+
+    void b(String str);
+
+    c c(String str);
+
+    void d(long j10);
+
+    boolean e(String str);
+
+    long f(c cVar);
+
+    int size();
+}

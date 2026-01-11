@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android" xmlns:app="http://schemas.android.com/apk/res-auto" xmlns:aapt="http://schemas.android.com/aapt" android:orientation="vertical" android:background="@color/backgroundV2" android:paddingTop="?attr/actionBarSize" android:paddingBottom="24dp" android:layout_width="match_parent" android:layout_height="match_parent" android:layout_marginBottom="@dimen/bottom_sheet_peek_height" android:paddingStart="16dp" android:paddingEnd="16dp">
+    <FrameLayout android:id="@+id/bubbleContainer" android:layout_width="match_parent" android:layout_height="110dp">
+        <com.facebook.shimmer.ShimmerFrameLayout android:id="@+id/shimmerLayout" android:layout_width="match_parent" android:layout_height="match_parent" app:shimmer_auto_start="true" app:shimmer_base_alpha="1" app:shimmer_highlight_alpha="0.4">
+            <LinearLayout android:gravity="center" android:orientation="vertical" android:layout_width="match_parent" android:layout_height="match_parent">
+                <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="@string/loadingStatsTitle" style="@style/PrimaryTextAppearance"/>
+                <TextView android:textSize="12sp" android:layout_width="wrap_content" android:layout_height="wrap_content" android:layout_marginTop="2dp" android:text="@string/loadingStatsSubtitle" style="@style/SecondaryTextAppearance"/>
+            </LinearLayout>
+        </com.facebook.shimmer.ShimmerFrameLayout>
+        <LinearLayout android:layout_gravity="center" android:orientation="vertical" android:id="@+id/totalAmountContainer" android:layout_width="match_parent" android:layout_height="wrap_content">
+            <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="@string/statsTokensEarned" style="@style/SecondaryTextAppearance"/>
+            <TextView android:textSize="24sp" android:id="@+id/totalNodlTextView" android:layout_width="wrap_content" android:layout_height="wrap_content"/>
+            <TextView android:textSize="12sp" android:id="@+id/totalTimeTextView" android:layout_width="wrap_content" android:layout_height="wrap_content" style="@style/SecondaryTextAppearance"/>
+        </LinearLayout>
+        <FrameLayout android:layout_gravity="center_vertical" android:layout_width="match_parent" android:layout_height="match_parent" android:layout_marginBottom="12dp">
+            <LinearLayout android:gravity="center" android:layout_gravity="bottom" android:orientation="vertical" android:id="@+id/bubbleLayout" android:background="@drawable/background_tab" android:paddingTop="8dp" android:paddingBottom="8dp" android:visibility="invisible" android:layout_width="wrap_content" android:layout_height="wrap_content" android:layout_marginBottom="5dp" android:paddingStart="12dp" android:paddingEnd="12dp">
+                <TextView android:textSize="24sp" android:textColor="@color/textDark" android:id="@+id/nodlTextView" android:layout_width="wrap_content" android:layout_height="wrap_content"/>
+                <TextView android:textSize="12sp" android:id="@+id/timeTextView" android:layout_width="wrap_content" android:layout_height="wrap_content" style="@style/SecondaryTextAppearance"/>
+            </LinearLayout>
+            <ImageView android:layout_gravity="bottom" android:id="@+id/bubbleNotchView" android:visibility="gone" android:layout_width="wrap_content" android:layout_height="5dp" android:src="@drawable/ic_stat_bubble_notch"/>
+        </FrameLayout>
+    </FrameLayout>
+    <View android:background="@color/separatorV2" android:layout_width="match_parent" android:layout_height="1dp"/>
+    <FrameLayout android:layout_width="match_parent" android:layout_height="0dp" android:layout_weight="1">
+        <View android:id="@+id/bubbleLineView" android:background="@color/separatorV2" android:visibility="gone" android:layout_width="1dp" android:layout_height="match_parent" android:layout_marginTop="8dp" android:layout_marginBottom="16dp" android:alpha="0.4"/>
+        <com.github.mikephil.charting.charts.BarChart android:id="@+id/chart" android:layout_width="match_parent" android:layout_height="match_parent"/>
+    </FrameLayout>
+    <com.google.android.material.tabs.TabLayout android:layout_gravity="center_horizontal" android:id="@+id/tabLayout" android:background="@drawable/background_tablayout" android:layout_width="match_parent" android:layout_height="32dp" android:layout_marginTop="24dp" style="@style/TabLayoutAppearance"/>
+</LinearLayout>

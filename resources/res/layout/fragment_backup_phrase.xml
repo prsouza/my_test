@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android" xmlns:app="http://schemas.android.com/apk/res-auto" xmlns:aapt="http://schemas.android.com/aapt" android:tag="layout/fragment_backup_phrase_0" android:background="@color/appBackground" android:layout_width="match_parent" android:layout_height="match_parent" android:layout_marginStart="@dimen/screen_margin_horizontal" android:layout_marginEnd="@dimen/screen_margin_horizontal">
+    <TextView android:id="@+id/titleTextView" android:layout_width="match_parent" android:layout_height="wrap_content" android:text="@string/titlePhraseBackup" style="@style/HeaderTextAppearance"/>
+    <TextView android:id="@+id/messageTextView" android:layout_width="match_parent" android:layout_height="wrap_content" android:text="@string/notePhrase" android:layout_below="@+id/titleTextView" style="@style/SecondaryTextAppearance"/>
+    <TextView android:textSize="56sp" android:id="@+id/wordTextView" android:tag="binding_1" android:layout_width="wrap_content" android:layout_height="wrap_content" android:layout_marginTop="100dp" android:layout_below="@+id/messageTextView" android:layout_centerHorizontal="true"/>
+    <TextView android:id="@+id/wordCountTextView" android:tag="binding_2" android:layout_width="wrap_content" android:layout_height="wrap_content" android:layout_below="@+id/wordTextView" android:layout_centerHorizontal="true" style="@style/SecondaryTextAppearance"/>
+    <LinearLayout android:orientation="horizontal" android:layout_width="match_parent" android:layout_height="wrap_content" android:weightSum="2" android:layout_alignParentBottom="true">
+        <Button android:tag="binding_3" android:layout_width="0dp" android:layout_height="wrap_content" android:text="@string/previous" android:layout_weight="1" android:layout_marginEnd="4dp" style="@style/SecondaryButtonAppearance"/>
+        <Button android:tag="binding_4" android:layout_width="0dp" android:layout_height="wrap_content" android:layout_weight="1" android:layout_marginStart="4dp"/>
+    </LinearLayout>
+</RelativeLayout>

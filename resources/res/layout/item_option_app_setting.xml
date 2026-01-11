@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android" xmlns:app="http://schemas.android.com/apk/res-auto" xmlns:aapt="http://schemas.android.com/aapt" android:background="@drawable/background_button_accent" android:paddingBottom="12dp" android:layout_width="match_parent" android:layout_height="wrap_content">
+    <TextView android:id="@+id/labelTextView" android:paddingTop="8dp" android:paddingBottom="8dp" android:clickable="false" android:layout_width="match_parent" android:layout_height="wrap_content" android:layout_toStartOf="@+id/settingSwitch"/>
+    <com.google.android.material.switchmaterial.SwitchMaterial android:id="@+id/settingSwitch" android:paddingTop="8dp" android:clickable="false" android:layout_width="wrap_content" android:layout_height="wrap_content" android:paddingStart="16dp" android:paddingEnd="16dp" android:layout_alignParentEnd="true"/>
+    <TextView android:textSize="@dimen/settings_hint_text" android:id="@+id/detailTextView" android:paddingBottom="8dp" android:clickable="false" android:layout_width="match_parent" android:layout_height="wrap_content" android:layout_below="@+id/labelTextView" android:paddingStart="8dp" android:paddingEnd="8dp" style="@style/SecondaryTextAppearance"/>
+</RelativeLayout>

@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android" xmlns:app="http://schemas.android.com/apk/res-auto" xmlns:aapt="http://schemas.android.com/aapt" android:layout_width="match_parent" android:layout_height="@dimen/social_item_height">
+    <ImageView android:id="@+id/socialIcon" android:layout_width="@dimen/social_icon_size" android:layout_height="@dimen/social_icon_size" android:layout_centerVertical="true" app:tint="@color/colorAccent"/>
+    <ImageView android:id="@+id/clickableIcon" android:layout_width="@dimen/social_icon_size" android:layout_height="@dimen/social_icon_size" android:src="@drawable/ic_clickable" android:layout_centerVertical="true" android:layout_alignParentEnd="true" app:tint="@color/textSecondaryV2"/>
+    <TextView android:id="@+id/socialName" android:layout_width="match_parent" android:layout_height="wrap_content" android:layout_centerVertical="true" android:layout_marginStart="@dimen/screen_margin_horizontal" android:layout_toStartOf="@+id/clickableIcon" android:layout_toEndOf="@+id/socialIcon"/>
+    <View android:id="@+id/dividerView" android:background="@color/textSecondaryV2" android:layout_width="match_parent" android:layout_height="1dp" android:layout_alignParentBottom="true" android:alpha="0.4"/>
+</RelativeLayout>

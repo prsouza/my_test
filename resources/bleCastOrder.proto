@@ -1,0 +1,15 @@
+syntax = "proto3";
+
+package io.nodle.sdk.common;
+option go_package = ".;data";
+
+message BleAdvertiseParameters {
+    uint64 duration = 1;
+    int32 txPower = 2;
+    int32 advMode = 3;
+    bool hasManufacturerData = 4;
+    int32 manufacturerId = 5;
+    bytes manufacturerData = 6;
+    bool hasServiceUUID = 7;
+    string serviceUUID = 8;
+}

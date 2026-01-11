@@ -1,0 +1,77 @@
+syntax = "proto3";
+
+package io.nodle.sdk.common;
+option go_package = ".;data";
+
+import "common.proto";
+
+message CellScanResult {
+  uint64 timestampMsec = 1;
+  LocationItem location = 2;
+  repeated CellScanItem cells = 3;
+}
+
+message CellScanItem {
+  oneof info {
+    CellInfoGsm gsmInfo = 1;
+    CellInfoCdma cdmaInfo = 2;
+    CellInfoWcdma wcdmaInfo = 3;
+    CellInfoLte lteInfo = 4;
+    CellInfoNr nrInfo = 5;
+  }
+}
+
+message CellInfoGsm {
+  int32 lac = 1;
+  int32 cid = 2;
+  int32 arfcn = 3;
+  int32 bsic = 4;
+  string mcc = 5;
+  string mnc = 6;
+  int32 dbm = 7;
+  int32 ber = 8;
+}
+
+message CellInfoLte {
+  int32 ci = 1;
+  int32 pci = 2;
+  int32 tac = 3;
+  int32 earfcn = 4;
+  repeated int32 bands = 5;
+  string mcc = 6;
+  string mnc = 7;
+  int32 dbm = 8;
+  int32 rssnr = 9;
+}
+
+message CellInfoWcdma {
+  int32 lac = 1;
+  int32 cid = 2;
+  int32 psc = 3;
+  int32 uarfcn = 4;
+  string mcc = 5;
+  string mnc = 6;
+  int32 dbm = 7;
+  int32 ber = 8;
+}
+
+message CellInfoCdma {
+  int32 systemId = 1;
+  int32 networkId = 2;
+  int32 baseId = 3;
+  int32 cdmaEcio = 4;
+  int32 dbm = 5;
+  int32 evdoSnr = 6;
+}
+
+message CellInfoNr {
+  int32 tac = 1;
+  int32 nrarfcn = 2;
+  repeated int32 bands = 3;
+  string mcc = 4;
+  string mnc = 5;
+  int32 pci = 6;
+  int64 nci = 7;
+  int32 dbm = 8;
+  int32 sssinr = 9;
+}

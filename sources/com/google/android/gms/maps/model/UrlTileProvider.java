@@ -1,0 +1,53 @@
+package com.google.android.gms.maps.model;
+
+import com.google.android.gms.common.internal.Preconditions;
+import com.google.android.gms.internal.maps.zzf;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.net.URL;
+
+public abstract class UrlTileProvider implements TileProvider {
+    private final int zza;
+    private final int zzb;
+
+    public UrlTileProvider(int i, int i10) {
+        this.zza = i;
+        this.zzb = i10;
+    }
+
+    /* JADX INFO: finally extract failed */
+    public final Tile getTile(int i, int i10, int i11) {
+        URL tileUrl = getTileUrl(i, i10, i11);
+        if (tileUrl == null) {
+            return TileProvider.NO_TILE;
+        }
+        try {
+            zzf.zzb(4352);
+            int i12 = this.zza;
+            int i13 = this.zzb;
+            InputStream inputStream = tileUrl.openConnection().getInputStream();
+            ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
+            Preconditions.checkNotNull(inputStream, "from must not be null.");
+            Preconditions.checkNotNull(byteArrayOutputStream, "to must not be null.");
+            byte[] bArr = new byte[LZ4Constants.HASH_TABLE_SIZE];
+            while (true) {
+                int read = inputStream.read(bArr);
+                if (read == -1) {
+                    Tile tile = new Tile(i12, i13, byteArrayOutputStream.toByteArray());
+                    zzf.zza();
+                    return tile;
+                }
+                byteArrayOutputStream.write(bArr, 0, read);
+            }
+        } catch (IOException unused) {
+            zzf.zza();
+            return null;
+        } catch (Throwable th2) {
+            zzf.zza();
+            throw th2;
+        }
+    }
+
+    public abstract URL getTileUrl(int i, int i10, int i11);
+}

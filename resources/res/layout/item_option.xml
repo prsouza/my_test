@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android" xmlns:app="http://schemas.android.com/apk/res-auto" xmlns:aapt="http://schemas.android.com/aapt" android:background="@drawable/background_listitem" android:layout_width="match_parent" android:layout_height="wrap_content" android:layout_marginBottom="8dp">
+    <View android:id="@+id/dividerView" android:background="@color/colorPrimaryText" android:visibility="gone" android:layout_width="match_parent" android:layout_height="1dp" android:alpha="0.1"/>
+    <TextView android:gravity="center_vertical" android:id="@+id/titleTextView" android:layout_width="match_parent" android:layout_height="@dimen/settings_item_height" android:paddingStart="16dp" android:layout_toStartOf="@+id/iconLayout"/>
+    <LinearLayout android:gravity="center" android:orientation="vertical" android:id="@+id/iconLayout" android:visibility="gone" android:layout_width="wrap_content" android:layout_height="@dimen/settings_item_height" android:paddingEnd="4dp" android:layout_alignParentEnd="true">
+        <ImageView android:gravity="center_vertical" android:id="@+id/iconImageView" android:layout_width="wrap_content" android:layout_height="wrap_content" style="@style/AccentTextAppearance"/>
+        <TextView android:textSize="10sp" android:id="@+id/iconTextView" android:layout_width="wrap_content" android:layout_height="wrap_content" android:textAllCaps="true" style="@style/AccentTextAppearance"/>
+    </LinearLayout>
+    <androidx.recyclerview.widget.RecyclerView android:id="@+id/childRecyclerView" android:visibility="gone" android:layout_width="match_parent" android:layout_height="wrap_content" android:layout_marginTop="8dp" android:layout_marginBottom="8dp" android:layout_below="@+id/titleTextView" android:paddingStart="16dp" android:paddingEnd="16dp"/>
+</RelativeLayout>

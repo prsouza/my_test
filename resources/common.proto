@@ -1,0 +1,12 @@
+syntax = "proto3";
+
+package io.nodle.sdk.common;
+option go_package = ".;data";
+
+message LocationItem {
+    uint64 geotime = 1;
+    double latitude = 2;
+    double longitude = 3;
+    double altitude = 4;
+    float accuracy = 5;
+}

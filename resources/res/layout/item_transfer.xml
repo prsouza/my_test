@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android" xmlns:app="http://schemas.android.com/apk/res-auto" xmlns:aapt="http://schemas.android.com/aapt" android:background="@drawable/background_button_accent" android:layout_width="match_parent" android:layout_height="@dimen/item_transfer_height" android:minHeight="@dimen/item_transfer_height">
+    <RelativeLayout android:layout_width="match_parent" android:layout_height="wrap_content" android:layout_centerInParent="true">
+        <TextView android:id="@+id/pkTextView" android:layout_width="wrap_content" android:layout_height="wrap_content" android:layout_toStartOf="@+id/amountTextView" android:layout_alignParentStart="true"/>
+        <TextView android:textSize="14sp" android:id="@+id/timeTextView" android:layout_width="wrap_content" android:layout_height="wrap_content" android:layout_marginTop="4dp" android:layout_below="@+id/pkTextView" android:layout_toStartOf="@+id/arrowImageView" android:layout_alignParentStart="true" style="@style/SecondaryTextAppearance"/>
+        <TextView android:textSize="14sp" android:id="@+id/statusTextView" android:visibility="gone" android:layout_width="wrap_content" android:layout_height="wrap_content" android:layout_marginTop="4dp" android:text="@string/pending" android:layout_below="@+id/pkTextView" android:layout_toStartOf="@+id/arrowImageView" style="@style/SecondaryTextAppearance"/>
+        <TextView android:id="@+id/amountTextView" android:layout_width="wrap_content" android:layout_height="wrap_content" android:layout_toStartOf="@+id/arrowImageView"/>
+        <ImageView android:id="@+id/arrowImageView" android:layout_width="wrap_content" android:layout_height="wrap_content" android:src="@drawable/ic_clickable" android:alpha="0.5" android:layout_marginStart="4dp" android:layout_marginEnd="4dp" android:layout_alignParentEnd="true"/>
+    </RelativeLayout>
+</RelativeLayout>

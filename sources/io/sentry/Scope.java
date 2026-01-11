@@ -1,0 +1,461 @@
+package io.sentry;
+
+import com.google.android.gms.measurement.api.AppMeasurementSdk;
+import io.sentry.SentryOptions;
+import io.sentry.protocol.Contexts;
+import io.sentry.protocol.Request;
+import io.sentry.protocol.User;
+import io.sentry.util.CollectionUtils;
+import io.sentry.util.Objects;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Queue;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.CopyOnWriteArrayList;
+
+public final class Scope {
+    private List<Attachment> attachments = new CopyOnWriteArrayList();
+    private Queue<Breadcrumb> breadcrumbs;
+    private Contexts contexts = new Contexts();
+    private List<EventProcessor> eventProcessors = new CopyOnWriteArrayList();
+    private Map<String, Object> extra = new ConcurrentHashMap();
+    private List<String> fingerprint = new ArrayList();
+    private SentryLevel level;
+    private final SentryOptions options;
+    private Request request;
+    private volatile Session session;
+    private final Object sessionLock = new Object();
+    private Map<String, String> tags = new ConcurrentHashMap();
+    private ITransaction transaction;
+    private final Object transactionLock = new Object();
+    private String transactionName;
+    private User user;
+
+    public interface IWithSession {
+        void accept(Session session);
+    }
+
+    public interface IWithTransaction {
+        void accept(ITransaction iTransaction);
+    }
+
+    public static final class SessionPair {
+        private final Session current;
+        private final Session previous;
+
+        public SessionPair(Session session, Session session2) {
+            this.current = session;
+            this.previous = session2;
+        }
+
+        public Session getCurrent() {
+            return this.current;
+        }
+
+        public Session getPrevious() {
+            return this.previous;
+        }
+    }
+
+    public Scope(Scope scope) {
+        this.transaction = scope.transaction;
+        this.transactionName = scope.transactionName;
+        this.session = scope.session;
+        this.options = scope.options;
+        this.level = scope.level;
+        User user2 = scope.user;
+        Request request2 = null;
+        this.user = user2 != null ? new User(user2) : null;
+        Request request3 = scope.request;
+        this.request = request3 != null ? new Request(request3) : request2;
+        this.fingerprint = new ArrayList(scope.fingerprint);
+        this.eventProcessors = new CopyOnWriteArrayList(scope.eventProcessors);
+        Queue<Breadcrumb> queue = scope.breadcrumbs;
+        Queue<Breadcrumb> createBreadcrumbsList = createBreadcrumbsList(scope.options.getMaxBreadcrumbs());
+        for (Breadcrumb breadcrumb : queue) {
+            createBreadcrumbsList.add(new Breadcrumb(breadcrumb));
+        }
+        this.breadcrumbs = createBreadcrumbsList;
+        Map<String, String> map = scope.tags;
+        ConcurrentHashMap concurrentHashMap = new ConcurrentHashMap();
+        for (Map.Entry next : map.entrySet()) {
+            if (next != null) {
+                concurrentHashMap.put((String) next.getKey(), (String) next.getValue());
+            }
+        }
+        this.tags = concurrentHashMap;
+        Map<String, Object> map2 = scope.extra;
+        ConcurrentHashMap concurrentHashMap2 = new ConcurrentHashMap();
+        for (Map.Entry next2 : map2.entrySet()) {
+            if (next2 != null) {
+                concurrentHashMap2.put((String) next2.getKey(), next2.getValue());
+            }
+        }
+        this.extra = concurrentHashMap2;
+        this.contexts = new Contexts(scope.contexts);
+        this.attachments = new CopyOnWriteArrayList(scope.attachments);
+    }
+
+    public Scope(SentryOptions sentryOptions) {
+        SentryOptions sentryOptions2 = (SentryOptions) Objects.requireNonNull(sentryOptions, "SentryOptions is required.");
+        this.options = sentryOptions2;
+        this.breadcrumbs = createBreadcrumbsList(sentryOptions2.getMaxBreadcrumbs());
+    }
+
+    private Queue<Breadcrumb> createBreadcrumbsList(int i) {
+        return SynchronizedQueue.synchronizedQueue(new CircularFifoQueue(i));
+    }
+
+    private Breadcrumb executeBeforeBreadcrumb(SentryOptions.BeforeBreadcrumbCallback beforeBreadcrumbCallback, Breadcrumb breadcrumb, Object obj) {
+        try {
+            return beforeBreadcrumbCallback.execute(breadcrumb, obj);
+        } catch (Throwable th2) {
+            this.options.getLogger().log(SentryLevel.ERROR, "The BeforeBreadcrumbCallback callback threw an exception. Exception details will be added to the breadcrumb.", th2);
+            if (th2.getMessage() == null) {
+                return breadcrumb;
+            }
+            breadcrumb.setData("sentry:message", th2.getMessage());
+            return breadcrumb;
+        }
+    }
+
+    public void addAttachment(Attachment attachment) {
+        this.attachments.add(attachment);
+    }
+
+    public void addBreadcrumb(Breadcrumb breadcrumb) {
+        addBreadcrumb(breadcrumb, (Object) null);
+    }
+
+    public void addBreadcrumb(Breadcrumb breadcrumb, Object obj) {
+        if (breadcrumb != null) {
+            SentryOptions.BeforeBreadcrumbCallback beforeBreadcrumb = this.options.getBeforeBreadcrumb();
+            if (beforeBreadcrumb != null) {
+                breadcrumb = executeBeforeBreadcrumb(beforeBreadcrumb, breadcrumb, obj);
+            }
+            if (breadcrumb != null) {
+                this.breadcrumbs.add(breadcrumb);
+                if (this.options.isEnableScopeSync()) {
+                    for (IScopeObserver addBreadcrumb : this.options.getScopeObservers()) {
+                        addBreadcrumb.addBreadcrumb(breadcrumb);
+                    }
+                    return;
+                }
+                return;
+            }
+            this.options.getLogger().log(SentryLevel.INFO, "Breadcrumb was dropped by beforeBreadcrumb", new Object[0]);
+        }
+    }
+
+    public void addEventProcessor(EventProcessor eventProcessor) {
+        this.eventProcessors.add(eventProcessor);
+    }
+
+    public void clear() {
+        this.level = null;
+        this.user = null;
+        this.request = null;
+        this.fingerprint.clear();
+        clearBreadcrumbs();
+        this.tags.clear();
+        this.extra.clear();
+        this.eventProcessors.clear();
+        clearTransaction();
+        clearAttachments();
+    }
+
+    public void clearAttachments() {
+        this.attachments.clear();
+    }
+
+    public void clearBreadcrumbs() {
+        this.breadcrumbs.clear();
+    }
+
+    public void clearTransaction() {
+        synchronized (this.transactionLock) {
+            this.transaction = null;
+        }
+        this.transactionName = null;
+    }
+
+    public Session endSession() {
+        Session session2;
+        synchronized (this.sessionLock) {
+            session2 = null;
+            if (this.session != null) {
+                this.session.end();
+                Session clone = this.session.clone();
+                this.session = null;
+                session2 = clone;
+            }
+        }
+        return session2;
+    }
+
+    public List<Attachment> getAttachments() {
+        return new CopyOnWriteArrayList(this.attachments);
+    }
+
+    public Queue<Breadcrumb> getBreadcrumbs() {
+        return this.breadcrumbs;
+    }
+
+    public Contexts getContexts() {
+        return this.contexts;
+    }
+
+    public List<EventProcessor> getEventProcessors() {
+        return this.eventProcessors;
+    }
+
+    public Map<String, Object> getExtras() {
+        return this.extra;
+    }
+
+    public List<String> getFingerprint() {
+        return this.fingerprint;
+    }
+
+    public SentryLevel getLevel() {
+        return this.level;
+    }
+
+    public Request getRequest() {
+        return this.request;
+    }
+
+    /* JADX WARNING: Code restructure failed: missing block: B:2:0x0004, code lost:
+        r1 = r0.getLatestActiveSpan();
+     */
+    /* Code decompiled incorrectly, please refer to instructions dump. */
+    public io.sentry.ISpan getSpan() {
+        /*
+            r2 = this;
+            io.sentry.ITransaction r0 = r2.transaction
+            if (r0 == 0) goto L_0x000b
+            io.sentry.Span r1 = r0.getLatestActiveSpan()
+            if (r1 == 0) goto L_0x000b
+            return r1
+        L_0x000b:
+            return r0
+        */
+        throw new UnsupportedOperationException("Method not decompiled: io.sentry.Scope.getSpan():io.sentry.ISpan");
+    }
+
+    public Map<String, String> getTags() {
+        return CollectionUtils.newConcurrentHashMap(this.tags);
+    }
+
+    public ITransaction getTransaction() {
+        return this.transaction;
+    }
+
+    public String getTransactionName() {
+        ITransaction iTransaction = this.transaction;
+        return iTransaction != null ? iTransaction.getName() : this.transactionName;
+    }
+
+    public User getUser() {
+        return this.user;
+    }
+
+    public void removeContexts(String str) {
+        this.contexts.remove(str);
+    }
+
+    public void removeExtra(String str) {
+        this.extra.remove(str);
+        if (this.options.isEnableScopeSync()) {
+            for (IScopeObserver removeExtra : this.options.getScopeObservers()) {
+                removeExtra.removeExtra(str);
+            }
+        }
+    }
+
+    public void removeTag(String str) {
+        this.tags.remove(str);
+        if (this.options.isEnableScopeSync()) {
+            for (IScopeObserver removeTag : this.options.getScopeObservers()) {
+                removeTag.removeTag(str);
+            }
+        }
+    }
+
+    public void setContexts(String str, Boolean bool) {
+        HashMap hashMap = new HashMap();
+        hashMap.put(AppMeasurementSdk.ConditionalUserProperty.VALUE, bool);
+        setContexts(str, (Object) hashMap);
+    }
+
+    public void setContexts(String str, Character ch2) {
+        HashMap hashMap = new HashMap();
+        hashMap.put(AppMeasurementSdk.ConditionalUserProperty.VALUE, ch2);
+        setContexts(str, (Object) hashMap);
+    }
+
+    public void setContexts(String str, Number number) {
+        HashMap hashMap = new HashMap();
+        hashMap.put(AppMeasurementSdk.ConditionalUserProperty.VALUE, number);
+        setContexts(str, (Object) hashMap);
+    }
+
+    public void setContexts(String str, Object obj) {
+        this.contexts.put(str, obj);
+    }
+
+    public void setContexts(String str, String str2) {
+        HashMap hashMap = new HashMap();
+        hashMap.put(AppMeasurementSdk.ConditionalUserProperty.VALUE, str2);
+        setContexts(str, (Object) hashMap);
+    }
+
+    public void setContexts(String str, Collection<?> collection) {
+        HashMap hashMap = new HashMap();
+        hashMap.put(AppMeasurementSdk.ConditionalUserProperty.VALUE, collection);
+        setContexts(str, (Object) hashMap);
+    }
+
+    public void setContexts(String str, Object[] objArr) {
+        HashMap hashMap = new HashMap();
+        hashMap.put(AppMeasurementSdk.ConditionalUserProperty.VALUE, objArr);
+        setContexts(str, (Object) hashMap);
+    }
+
+    public void setExtra(String str, String str2) {
+        this.extra.put(str, str2);
+        if (this.options.isEnableScopeSync()) {
+            for (IScopeObserver extra2 : this.options.getScopeObservers()) {
+                extra2.setExtra(str, str2);
+            }
+        }
+    }
+
+    public void setFingerprint(List<String> list) {
+        if (list != null) {
+            this.fingerprint = new ArrayList(list);
+        }
+    }
+
+    public void setLevel(SentryLevel sentryLevel) {
+        this.level = sentryLevel;
+    }
+
+    public void setRequest(Request request2) {
+        this.request = request2;
+    }
+
+    public void setTag(String str, String str2) {
+        this.tags.put(str, str2);
+        if (this.options.isEnableScopeSync()) {
+            for (IScopeObserver tag : this.options.getScopeObservers()) {
+                tag.setTag(str, str2);
+            }
+        }
+    }
+
+    public void setTransaction(ITransaction iTransaction) {
+        synchronized (this.transactionLock) {
+            this.transaction = iTransaction;
+        }
+    }
+
+    public void setTransaction(String str) {
+        if (str != null) {
+            ITransaction iTransaction = this.transaction;
+            if (iTransaction != null) {
+                iTransaction.setName(str);
+            }
+            this.transactionName = str;
+            return;
+        }
+        this.options.getLogger().log(SentryLevel.WARNING, "Transaction cannot be null", new Object[0]);
+    }
+
+    public void setUser(User user2) {
+        this.user = user2;
+        if (this.options.isEnableScopeSync()) {
+            for (IScopeObserver user3 : this.options.getScopeObservers()) {
+                user3.setUser(user2);
+            }
+        }
+    }
+
+    /* JADX DEBUG: Multi-variable search result rejected for TypeSearchVarInfo{r3v1, resolved type: io.sentry.Scope$SessionPair} */
+    /* JADX DEBUG: Multi-variable search result rejected for TypeSearchVarInfo{r3v2, resolved type: io.sentry.Session} */
+    /* JADX WARNING: type inference failed for: r3v0 */
+    /* JADX WARNING: type inference failed for: r3v3 */
+    /* JADX WARNING: type inference failed for: r3v5 */
+    /* JADX WARNING: Multi-variable type inference failed */
+    /* Code decompiled incorrectly, please refer to instructions dump. */
+    public io.sentry.Scope.SessionPair startSession() {
+        /*
+            r8 = this;
+            java.lang.Object r0 = r8.sessionLock
+            monitor-enter(r0)
+            io.sentry.Session r1 = r8.session     // Catch:{ all -> 0x0057 }
+            if (r1 == 0) goto L_0x000c
+            io.sentry.Session r1 = r8.session     // Catch:{ all -> 0x0057 }
+            r1.end()     // Catch:{ all -> 0x0057 }
+        L_0x000c:
+            io.sentry.Session r1 = r8.session     // Catch:{ all -> 0x0057 }
+            io.sentry.SentryOptions r2 = r8.options     // Catch:{ all -> 0x0057 }
+            java.lang.String r2 = r2.getRelease()     // Catch:{ all -> 0x0057 }
+            r3 = 0
+            if (r2 == 0) goto L_0x0045
+            io.sentry.Session r2 = new io.sentry.Session     // Catch:{ all -> 0x0057 }
+            io.sentry.SentryOptions r4 = r8.options     // Catch:{ all -> 0x0057 }
+            java.lang.String r4 = r4.getDistinctId()     // Catch:{ all -> 0x0057 }
+            io.sentry.protocol.User r5 = r8.user     // Catch:{ all -> 0x0057 }
+            io.sentry.SentryOptions r6 = r8.options     // Catch:{ all -> 0x0057 }
+            java.lang.String r6 = r6.getEnvironment()     // Catch:{ all -> 0x0057 }
+            io.sentry.SentryOptions r7 = r8.options     // Catch:{ all -> 0x0057 }
+            java.lang.String r7 = r7.getRelease()     // Catch:{ all -> 0x0057 }
+            r2.<init>(r4, r5, r6, r7)     // Catch:{ all -> 0x0057 }
+            r8.session = r2     // Catch:{ all -> 0x0057 }
+            if (r1 == 0) goto L_0x0038
+            io.sentry.Session r3 = r1.clone()     // Catch:{ all -> 0x0057 }
+        L_0x0038:
+            io.sentry.Scope$SessionPair r1 = new io.sentry.Scope$SessionPair     // Catch:{ all -> 0x0057 }
+            io.sentry.Session r2 = r8.session     // Catch:{ all -> 0x0057 }
+            io.sentry.Session r2 = r2.clone()     // Catch:{ all -> 0x0057 }
+            r1.<init>(r2, r3)     // Catch:{ all -> 0x0057 }
+            r3 = r1
+            goto L_0x0055
+        L_0x0045:
+            io.sentry.SentryOptions r1 = r8.options     // Catch:{ all -> 0x0057 }
+            io.sentry.ILogger r1 = r1.getLogger()     // Catch:{ all -> 0x0057 }
+            io.sentry.SentryLevel r2 = io.sentry.SentryLevel.WARNING     // Catch:{ all -> 0x0057 }
+            java.lang.String r4 = "Release is not set on SentryOptions. Session could not be started"
+            r5 = 0
+            java.lang.Object[] r5 = new java.lang.Object[r5]     // Catch:{ all -> 0x0057 }
+            r1.log((io.sentry.SentryLevel) r2, (java.lang.String) r4, (java.lang.Object[]) r5)     // Catch:{ all -> 0x0057 }
+        L_0x0055:
+            monitor-exit(r0)     // Catch:{ all -> 0x0057 }
+            return r3
+        L_0x0057:
+            r1 = move-exception
+            monitor-exit(r0)     // Catch:{ all -> 0x0057 }
+            throw r1
+        */
+        throw new UnsupportedOperationException("Method not decompiled: io.sentry.Scope.startSession():io.sentry.Scope$SessionPair");
+    }
+
+    public Session withSession(IWithSession iWithSession) {
+        Session clone;
+        synchronized (this.sessionLock) {
+            iWithSession.accept(this.session);
+            clone = this.session != null ? this.session.clone() : null;
+        }
+        return clone;
+    }
+
+    public void withTransaction(IWithTransaction iWithTransaction) {
+        synchronized (this.transactionLock) {
+            iWithTransaction.accept(this.transaction);
+        }
+    }
+}

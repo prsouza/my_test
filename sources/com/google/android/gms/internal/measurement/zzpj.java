@@ -1,0 +1,15 @@
+package com.google.android.gms.internal.measurement;
+
+public final class zzpj implements zzif {
+    private static final zzpj zza = new zzpj();
+    private final zzif zzb = zzij.zza(zzij.zzb(new zzpl()));
+
+    public static boolean zzc() {
+        return zza.zza().zza();
+    }
+
+    /* renamed from: zzb */
+    public final zzpk zza() {
+        return (zzpk) this.zzb.zza();
+    }
+}

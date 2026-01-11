@@ -1,0 +1,11 @@
+package com.google.android.gms.internal.auth;
+
+final class zzfg implements zzfo {
+    public final zzfn zzb(Class<?> cls) {
+        throw new IllegalStateException("This should never be called.");
+    }
+
+    public final boolean zzc(Class<?> cls) {
+        return false;
+    }
+}

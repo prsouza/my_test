@@ -1,0 +1,96 @@
+syntax = "proto3";
+
+package io.nodle.iotee.smartx.v1;
+option go_package = ".;data";
+
+message SxOrder {
+    SmartX data = 1;
+    bytes proofOfEscrow = 2; // optional in case the signature is not trusted to check the fund directly
+    uint64 gasLimit = 3; // gas limit
+    Signature signature = 4; // signature for the data
+}
+
+message Signature {
+    bytes signerPubKey = 1; // ed25519 public key
+    bytes signature = 2; // ed25519 signature
+}
+
+message SmartX {
+    bytes bytecode = 1; // nasm
+    SxManifest manifest = 2; // manifest
+    Signature signature = 3; // signed by sx author
+}
+
+message SxManifest {
+    SxTarget targets = 1; // iot targets
+    SxEvents events = 2; // event registered
+    SxPermissions permissions = 3; // sx permissions
+    SxVM vm = 4; // vm parameters
+}
+
+message SxTarget {
+    bytes macAddress = 1;
+    uint32 manufacturerId = 2;
+    bytes manufacturerData = 3;
+    bytes nodleSecureID = 4;
+    bytes ibeaconUUID = 5;
+    bytes ibeaconMajor = 6;
+    bytes ibeaconMinor = 7;
+    bytes serviceUUID = 8;
+    string targetArea = 9;
+    uint64 sxExpiration = 10;
+}
+
+message SxEvents {
+    repeated uint32 id = 1;
+}
+
+message SxVM {
+    uint32 memory = 1;
+}
+
+message SxPermissions {
+    map<uint32, SxPermission> ops = 1;
+}
+
+message SxPermission {
+    oneof args {
+        LocationPermission locPermission = 2;
+        BlePermission blePermission = 3;
+        HttpPermission httpPermission = 4;
+        DtnPermission dtnPermission = 5;
+    }
+}
+
+message LocationPermission {
+    uint32 precision = 1;
+}
+
+message BlePermission {
+    uint32 maxMtu = 1;
+    uint64 maxBuffer = 2;
+}
+
+message HttpPermission {
+    uint64 maxBuffer = 1;
+    repeated string urlAuthorized = 2;
+}
+
+message DtnPermission {
+    uint64 maxBuffer = 1;
+    uint64 maxLifetime = 2;
+    repeated string eidAuthorized = 3;
+}
+
+message SxReceipt {
+    uint32 version = 1;
+    SxReceiptData data = 2;
+    Signature signature = 3; // receipt signed by the sdk worker who did the computation
+}
+
+message SxReceiptData {
+    bytes sxHash = 1; // identifies the transaction
+    uint32 returnCode = 2; // execution return code
+    bytes memo = 3; // execution output
+    uint64 gasConsumed = 4; // bill
+}

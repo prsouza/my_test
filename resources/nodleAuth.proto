@@ -1,0 +1,21 @@
+syntax = "proto3";
+
+package io.nodle.sdk.common;
+option go_package = ".;data";
+
+import "common.proto";
+
+message AuthParameters {
+    string source = 1;
+    string key = 2;
+    int64 nounce = 3;
+}
+
+message NodleSdkStatus {
+    int64 timestamp = 1;
+    string devkey = 2;
+    string sdkid = 3;
+    string tags = 4;
+    string version = 5;
+    LocationItem location = 6;
+}

@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android" xmlns:app="http://schemas.android.com/apk/res-auto" xmlns:aapt="http://schemas.android.com/aapt" android:orientation="vertical" android:tag="layout/activity_notifications_0" android:layout_width="match_parent" android:layout_height="match_parent" android:layout_marginStart="@dimen/screen_margin_horizontal" android:layout_marginEnd="@dimen/screen_margin_horizontal">
+    <include android:id="@+id/toolbar" layout="@layout/toolbar_default"/>
+    <RelativeLayout android:layout_width="match_parent" android:layout_height="match_parent" android:layout_marginStart="@dimen/screen_margin_horizontal" android:layout_marginEnd="@dimen/screen_margin_horizontal">
+        <TextView android:id="@+id/titleTextView" android:layout_width="match_parent" android:layout_height="wrap_content" android:text="@string/titleNotifications" style="@style/HeaderTextAppearance"/>
+        <View android:background="@color/colorPrimaryText" android:layout_width="match_parent" android:layout_height="1dp" android:layout_below="@+id/titleTextView" android:alpha="0.1"/>
+        <androidx.recyclerview.widget.RecyclerView android:id="@+id/notificationRecyclerView" android:tag="binding_1" android:layout_width="match_parent" android:layout_height="wrap_content" android:layout_below="@+id/titleTextView" app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"/>
+        <TextView android:id="@+id/noNotificationTextView" android:tag="binding_2" android:layout_width="match_parent" android:layout_height="wrap_content" android:layout_marginTop="40dp" android:text="@string/noNotifications" android:layout_below="@+id/titleTextView" style="@style/SecondaryTextAppearance"/>
+        <FrameLayout android:id="@+id/fragmentContainerLayout" android:focusable="false" android:clickable="false" android:layout_width="match_parent" android:layout_height="match_parent"/>
+    </RelativeLayout>
+</LinearLayout>

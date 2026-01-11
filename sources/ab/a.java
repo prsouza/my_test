@@ -1,0 +1,9 @@
+package ab;
+
+public enum a {
+    LOCATION_PERMISSION,
+    BLUETOOTH_PERMISSION,
+    ENABLE_LOCATION,
+    ENABLE_BLUETOOTH,
+    NONE
+}

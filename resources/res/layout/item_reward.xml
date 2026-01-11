@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android" xmlns:app="http://schemas.android.com/apk/res-auto" xmlns:aapt="http://schemas.android.com/aapt" android:background="@drawable/background_button_accent" android:layout_width="match_parent" android:layout_height="@dimen/item_reward_height">
+    <RelativeLayout android:id="@+id/rewardLayout" android:visibility="gone" android:layout_width="match_parent" android:layout_height="wrap_content" android:layout_centerVertical="true" android:layout_toStartOf="@+id/arrowImageView">
+        <TextView android:id="@+id/rTimeTextView" android:layout_width="wrap_content" android:layout_height="wrap_content" android:lines="1" android:layout_centerVertical="true" android:layout_toStartOf="@+id/rAmountTextView" android:layout_alignParentStart="true" style="@style/SecondaryTextAppearance"/>
+        <TextView android:id="@+id/rAmountTextView" android:layout_width="wrap_content" android:layout_height="wrap_content" android:layout_centerVertical="true" android:layout_alignParentEnd="true"/>
+    </RelativeLayout>
+    <RelativeLayout android:id="@+id/rewardPendingLayout" android:visibility="gone" android:layout_width="match_parent" android:layout_height="wrap_content" android:layout_centerVertical="true" android:layout_toStartOf="@+id/arrowImageView">
+        <TextView android:id="@+id/rPendingTextView" android:layout_width="wrap_content" android:layout_height="wrap_content" android:lines="1" android:layout_centerVertical="true" android:layout_toStartOf="@+id/rStatusTextView" android:layout_alignParentStart="true" style="@style/SecondaryTextAppearance"/>
+        <TextView android:id="@+id/rStatusTextView" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="@string/pending" android:layout_centerVertical="true" android:layout_alignParentEnd="true" style="@style/SecondaryTextAppearance"/>
+    </RelativeLayout>
+    <ImageView android:id="@+id/arrowImageView" android:layout_width="wrap_content" android:layout_height="wrap_content" android:src="@drawable/ic_clickable" android:layout_centerVertical="true" android:alpha="0.5" android:layout_marginStart="4dp" android:layout_marginEnd="4dp" android:layout_alignParentEnd="true"/>
+</RelativeLayout>

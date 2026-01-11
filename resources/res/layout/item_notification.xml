@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android" xmlns:app="http://schemas.android.com/apk/res-auto" xmlns:aapt="http://schemas.android.com/aapt" android:background="@drawable/background_button_accent" android:paddingTop="16dp" android:layout_width="match_parent" android:layout_height="wrap_content">
+    <TextView android:id="@+id/titleTextView" android:layout_width="match_parent" android:layout_height="wrap_content"/>
+    <LinearLayout android:orientation="horizontal" android:id="@+id/timeLayout" android:layout_width="match_parent" android:layout_height="wrap_content" android:layout_marginTop="5dp" android:layout_below="@+id/titleTextView">
+        <ImageView android:layout_gravity="center_vertical" android:id="@+id/seenBadgeImageView" android:visibility="gone" android:layout_width="wrap_content" android:layout_height="wrap_content" android:src="@drawable/ic_seen_badge" android:layout_marginEnd="5dp" app:tint="@color/colorAccent"/>
+        <TextView android:textSize="13sp" android:id="@+id/timeTextView" android:layout_width="match_parent" android:layout_height="wrap_content" style="@style/SecondaryTextAppearance"/>
+    </LinearLayout>
+    <View android:background="@color/colorPrimaryText" android:layout_width="match_parent" android:layout_height="1dp" android:layout_marginTop="16dp" android:layout_below="@+id/timeLayout" android:alpha="0.1"/>
+</RelativeLayout>

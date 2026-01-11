@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android" xmlns:app="http://schemas.android.com/apk/res-auto" xmlns:aapt="http://schemas.android.com/aapt" android:tag="layout/fragment_sheet_home_0" android:layout_width="match_parent" android:layout_height="match_parent" android:layout_marginTop="100dp">
+    <androidx.core.widget.NestedScrollView android:id="@+id/homeBottomSheet" android:background="@drawable/background_bottom_sheet" android:paddingTop="8dp" android:layout_width="match_parent" android:layout_height="wrap_content" android:paddingStart="16dp" android:paddingEnd="16dp" app:behavior_hideable="false" app:behavior_peekHeight="@dimen/bottom_sheet_peek_height" app:layout_behavior="@string/bottom_sheet_behavior">
+        <LinearLayout android:gravity="center_horizontal" android:orientation="vertical" android:tag="binding_1" android:layout_width="match_parent" android:layout_height="wrap_content">
+            <LinearLayout android:gravity="center_horizontal" android:orientation="vertical" android:id="@+id/miniLayout" android:tag="binding_2" android:layout_width="match_parent" android:layout_height="wrap_content">
+                <View android:background="@color/separatorV2" android:layout_width="48dp" android:layout_height="4dp"/>
+                <TextView android:textSize="16sp" android:layout_width="wrap_content" android:layout_height="wrap_content" android:layout_marginTop="16dp" android:text="@string/balanceHeader" style="@style/SecondaryTextAppearance"/>
+                <com.facebook.shimmer.ShimmerFrameLayout android:id="@+id/shimmerLayout" android:layout_width="wrap_content" android:layout_height="wrap_content" app:shimmer_base_alpha="1" app:shimmer_highlight_alpha="0.4">
+                    <TextView android:textSize="32sp" android:tag="binding_3" android:layout_width="wrap_content" android:layout_height="wrap_content" android:layout_marginTop="6dp"/>
+                </com.facebook.shimmer.ShimmerFrameLayout>
+                <Button android:textSize="12sp" android:id="@+id/estimationInUsd" android:tag="binding_4" android:visibility="gone" android:layout_width="wrap_content" android:layout_height="40dp" android:layout_marginTop="4dp" android:text="@string/estimateInUsd" style="@style/AccentButtonAppearance"/>
+                <TextView android:textSize="12sp" android:id="@+id/nodleCashLabel" android:layout_width="wrap_content" android:layout_height="wrap_content" android:layout_marginTop="4dp" android:text="@string/titleOptions" style="@style/SecondaryTextAppearance"/>
+            </LinearLayout>
+            <LinearLayout android:orientation="horizontal" android:layout_width="match_parent" android:layout_height="wrap_content" android:layout_marginTop="32dp" android:weightSum="2">
+                <Button android:tag="binding_5" android:layout_width="0dp" android:layout_height="wrap_content" android:text="@string/receive" android:layout_weight="1" android:drawableStart="@drawable/ic_iching" android:paddingStart="18dp" android:paddingEnd="18dp" android:layout_marginStart="8dp" android:layout_marginEnd="4dp"/>
+                <Button android:tag="binding_6" android:layout_width="0dp" android:layout_height="wrap_content" android:text="@string/send" android:layout_weight="1" android:drawableStart="@drawable/ic_send" android:paddingStart="18dp" android:paddingEnd="18dp" android:layout_marginStart="4dp" android:layout_marginEnd="8dp"/>
+            </LinearLayout>
+            <include android:id="@+id/summaryLayout" layout="@layout/layout_history_summary"/>
+        </LinearLayout>
+    </androidx.core.widget.NestedScrollView>
+</androidx.coordinatorlayout.widget.CoordinatorLayout>

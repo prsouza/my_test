@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.appcompat.widget.Toolbar xmlns:android="http://schemas.android.com/apk/res/android" xmlns:app="http://schemas.android.com/apk/res-auto" xmlns:aapt="http://schemas.android.com/aapt" android:tag="layout/toolbar_history_v2_0" android:layout_width="match_parent" android:layout_height="?attr/actionBarSize" android:layout_marginStart="@dimen/screen_margin_horizontal" android:layout_marginEnd="@dimen/screen_margin_horizontal" app:contentInsetStart="0dp">
+    <RelativeLayout android:layout_width="match_parent" android:layout_height="match_parent">
+        <ImageButton android:layout_width="40dp" android:layout_height="40dp" android:src="@drawable/ic_back" android:layout_centerVertical="true" android:onClick="onClickBack" android:layout_alignParentStart="true"/>
+        <com.facebook.shimmer.ShimmerFrameLayout android:id="@+id/shimmerLayout1" android:layout_width="wrap_content" android:layout_height="wrap_content" android:layout_centerInParent="true" app:shimmer_base_alpha="1" app:shimmer_highlight_alpha="0.4">
+            <TextView android:tag="binding_1" android:layout_width="wrap_content" android:layout_height="wrap_content" style="@style/HeaderTextAppearance"/>
+        </com.facebook.shimmer.ShimmerFrameLayout>
+    </RelativeLayout>
+</androidx.appcompat.widget.Toolbar>
